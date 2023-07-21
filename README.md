@@ -7,7 +7,7 @@ chuyển chúng cho trình duyệt của người dùng và sử dụng nó đ�
 
 ##1. Có những cách nào để tạo 1 project Laravel?
 
-- dùng composer: composer create-project project-name
+- dùng composer: composer create-project laravel/laravel project-name
 - sau khi cài đặt laravel bằng laravel installation thì có thể tạo project laravel bằng : laravel new project-name
 
 ##2. Nêu mục đích chính, ngắn gọn của các thư mục trong dự án.
@@ -43,6 +43,7 @@ chuyển chúng cho trình duyệt của người dùng và sử dụng nó đ�
  - file package.js, chứa các package cần dùng cho projects.
  - file phpunit.xml, xml của phpunit dùng để testing project.
  - file webpack.mix.js, file dùng để build các webpack.
+
 ##3. Vòng đời của một request trong Laravel. (Mở rộng)
 
 ![image](https://github.com/Siftrd/laravel_quicktask/assets/90273323/cdfe67cb-986c-4287-8e77-1650dfbf15d5)
@@ -56,3 +57,12 @@ chuyển chúng cho trình duyệt của người dùng và sử dụng nó đ�
     2. Route -> Controller/Action
 - Nếu theo route 1, thì request sẽ được middleware xử lý logic theo những ràng buộc mà coder đặt ra để quyết định xem request đó có được đi tiếp hay là không.
 - Sau đó request sẽ được đưa tới Controller để xử lý, xong sẽ trả về response có thể qua view hoặc không thông qua view
+
+#chapter 2
+1. Migration là gì?
+2. Hàm up() và down() trong một class migration dùng để làm gì?
+3. Nêu các câu lệnh Migration thông dụng mà bạn biết.
+1. Mass assignment là gì?
+2. Cách xử lý Mass assignment trong Laravel.
+3. Tại sao Laravel có cả thuộc tính ""fillable"" và ""guarded"".
+4. Với các thuộc tính nằm trong blacklist, ta làm như thế nào để thay đổi nó?
