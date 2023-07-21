@@ -24,6 +24,12 @@ return new class extends Migration
             $table->rememberToken();
             $table->timestamps();
         });
+        Schema::table('users', function (Blueprint $table) {
+            $table->drop('name');
+            $table->string('username');
+            $table->string('first_name');
+            $table->string('last_name');
+        });
     }
 
     /**
