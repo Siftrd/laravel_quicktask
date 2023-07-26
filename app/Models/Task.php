@@ -11,6 +11,7 @@ class Task extends Model
 {
     use HasFactory;
     protected $primaryKey = 'id_task';
+    
     public function user()
     {
       return $this->belongsTo(User::class);
