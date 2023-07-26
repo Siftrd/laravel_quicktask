@@ -293,48 +293,55 @@ $this->belongsToMany(Product::class)->wherePivot('price', '>', 20000);
 ## 2. Tạo Accessors/Mutators như thế nào?
 
 ### 1. Định nghĩa 1 accessor:
-- Ví dụ, chúng ta hãy cũng tạo một hàm có tên getNameAttribute trong model User tại thư mục app như sau:
+- Ví dụ, chúng ta hãy cũng tạo một hàm có tên getFullnameAttribute trong model User tại thư mục app như sau:
 ```php
-public function getNameAttribute($value)
+public function getFullnameAttribute()
     {
-        return $this->strtoupper($value);
+        # code...
+        $fullname = "{$this->first_name} {$this->last_name}";
+        return $fullname;
     }
-
 ```
-- hàm trên có tác dụng chuyển chữ thường -> hoa. 
+- hàm trên có tác dụng lấy $first_name và $last_name hợp thành chuỗi $fullname. 
 - Hàm này được viết theo kiểu camelCase để thực hiện việc lấy giá trị cho thuộc tính name. 
-- Muốn định nghĩa một accessors trong một model bất kỳ nào, thì trong function của bạn phải có tiền tố là get và hậu tố là Attribute.
+
 - sau đó ở routes/web.php ta tạo ra 1 route mới chỉ đến accessor đó
 ```php
-Route::get('/accessors', function() {
-	$user = App\User::find(1);
-	
-	return $upper_name = $user->name;
+Route::get('/accessors', function () {
+    $user = User::find(1);
+    echo $user->fullname;
 });
 ```
-- Kết quả là thuộc tính $name của $user sẽ được viết hoa
-
+- Kết quả là echo ra thuộc tính $fullname.
+- Muốn định nghĩa một accessors trong một model bất kỳ nào, thì trong function của bạn phải có tiền tố là get và hậu tố là Attribute.
+```
+get{Attribute}Attribute
+```
 ### Định nghĩa 1 mutators
 - Ngược lại với accessors, mutators có nghĩa là khi bạn muốn format lại các giá trị thuộc tính trước khi lưu vào cơ sở dữ liệu. 
-- Để định nghĩa một Mutators, ví dụ này sẽ định nghĩa một phương thức setPasswordAttribute trong model User
+- Để định nghĩa một Mutators, ví dụ này sẽ định nghĩa một phương thức setUsernameAttribute trong model User
 ```php
-public function setPasswordAttribute($password)
-{
-    $this->attributes['password'] = bcrypt($password);
-}
+public function setUsernameAttribute($username)
+    {
+        return $this->attributes['username']=Str::slug($username, '-');
+    }
 ```
 - sau đó ở routes/web.php ta tạo ra 1 route
 ```php
-Route::get('/mutators', function() {
-    $user = App\User::find(1);
+Route::get('/mutators', function () {
+    $user = User::find(1);
 
-    $user->password = 123456;
+    $user->username = 'Bui Nhat Minh';
 
-    return $user->password;
+    echo $user->username;
 });
+
 
 ```
 
 - Kết quả là một đoạn ký tự đã được mã hóa. 
-- Ở ví dụ trên, hàm setPasswordAttribute sẽ được gọi với $password truyền vào là 123456. 
+- Ở ví dụ trên, hàm setUsernameAttribute sẽ được gọi với $password truyền vào là 123456. 
 - Muốn định nghĩa một Mutators trong một model, function của bạn phải có tiền tố là set và hậu tố là Attribute.
+```
+set{Attribute}Attribute
+```
