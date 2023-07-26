@@ -53,4 +53,14 @@ class User extends Authenticatable
 
         return $this->attributes['username']=Str::slug($username, '-');
     }
+    public function getFullnameAttribute()
+    {
+        $fullname = "{$this->first_name} {$this->last_name}";
+        
+        return $fullname;
+    }
+    public function setUsernameAttribute($username)
+    {
+        return $this->attributes['username']=Str::slug($username, '-');
+    }
 }
