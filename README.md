@@ -345,3 +345,87 @@ Route::get('/mutators', function () {
 ```
 set{Attribute}Attribute
 ```
+
+## Date Mutators
+- Mặc định trong Laravel, Eloquent sẽ chuyển đổi hai trường **created_at** and **updated_at** thành các instance của Carbon, một thư viện cung cấp rất nhiều hàm hữu ích và mở rộng class DateTime của PHP.
+- chúng ta có thể tuỳ chỉnh trường nào sẽ được tự động mutated, và thậm chí có thể disable việc mutation này bằng cách ghi đè lên thuộc tính $date trên model.
+
+```php
+class User extends Authenticatable
+{
+    use Notifiable;
+
+protected $dates = [
+        'created_at', 
+        'update_at', 
+        'delete_at', 
+    ];
+}
+```
+
+## Array & JSON Casting
+- Cast kiểu array đặc biệt hữu ích khi chúng ta làm việc với các column được lưu dưới dạng JSON.
+- Giả sử database có 1 trường JSON hoặc TEXT có chứa serialized JSON, thêm vào array cast lên attribute sẽ tự động deserialize các attribute thành PHP array khitruy cập trong Eloquent model:
+```php
+class User extends Model
+{
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'options' => 'array',
+    ];
+}
+```
+- Một khi cast được định nghĩa, có thể truy cập giá trị options và nó sẽ tự động được deserialize từ JSON thành PHP array. Khi đặt giá trị options, nó sẽ tự động được serialize trở lại thành JSON để lưu vào trong cơ sở dữ liệu
+
+# Chapter 5
+## 1. Seeder/Factory/Faker dùng để làm gì?
+- Seeder là 1 class để tạo ra các dữ liệu mẫu cho database trong quá trình xây dựng ứng dụng.
+- Tạo ra 1 seeder
+```php
+php artisan make:seeder UserSeeder
+```
+- Factory là class dùng để tạo ra các dummy records.
+- Faker là một thư viện PHP tạo dữ liệu giả cho bạn.
+- Tạo ra 1 Factory với thư viện Faker
+```php
+php artisan make:factory UserFactory
+```
+```php
+<?php
+use Faker\Generator as Faker;
+
+class UserFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition()
+    {
+        $fake_name= fake()->name();
+        $pieces = explode(" ", $fake_name);
+        $len = count($pieces);
+        return [
+            'username' => $fake_name,
+            'email' => fake()->unique()->safeEmail(),
+            'email_verified_at' => now(),
+            'password' => Hash::make(12345678), // password
+            'remember_token' => Str::random(10),
+            'is_admin' => random_int(0, 1),
+            'is_active' => random_int(0, 1),
+            'first_name'=>$pieces[0],
+            'last_name'=>$pieces[$len-1],
+        ];
+    }
+}
+```
+## 2. Khi nào nên sử dụng Seeder? Khi nào nên sử dụng Factory?
+
+- Seeder được sử dụng khi muốn thêm các bản ghi vào database mà chúng ta có thể kiểm soát được 
+
+- Factory sẽ được sử dụng khi muốn tạo 1 tập rất nhiều các bản ghi giả, để phục vụ cho việc test hoặc để kiểm tra phân trang... thay vì sử dụng seeder hay thêm từng bản ghi vào DB thì chúng ta sẽ sử dụng Factory
