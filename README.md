@@ -234,5 +234,107 @@ $this->hasManyThrough('App\Post', 'App\User');
 - Polymorphic Relations
 
 ## 2. Nêu các cách liên kết 2 đối tượng có quan hệ n-n.
-
+- Ví dụ một product sẽ thuộc nhiều orders mà một order lại có nhiều products
+- Để biểu diễn được quan hệ này chúng ta cần sử dụng đến một bảng thế 3, có tên là order_product. Bảng này sẽ đồng thời sẽ chứa 2 cột là order_id và product_id
+- và chúng ta sẽ dùng method belongsToMany để biểu diễn mối quan hệ này:
+```php
+$this->belongsToMany('App\Order');
+```
+- Eloquent sẽ tự động tìm đến bảng trung gian đặt tên theo thứ tự alphabet, trong trường hợp này bảng sẽ tên là order_product. Tuy nhiên nếu bạn muốn đặt 1 cái tên khác mà không theo quy ước ví dụ là product_order thì chỉ cần truyền thêm tham số thứ 2 vào method belongsToMany.
+```php
+$this->belongsToMany('App\Order', 'product_order');
+```
+- Tương tự bạn cũng có thể custom lại tên của 2 tên của cột liên kết tương ứng với tham số thứ 3 và thứ 4 của method belongsToMany. Với tham số thứ 3 sẽ là khóa ngoại của bảng đang định nghĩa quan hệ và tham số thứ 4 là bảng chúng ta muốn join. Ví dụ trong trường hợp này.
+```php
+$this->belongsToMany('App\Order', 'product_order', 'product_id', 'order_id');
+```
 ## 3. Làm thế nào để lấy dữ liệu từ bảng trung gian trong quan hệ n-n."
+- Để truy cập đến các cột của bảng trung gian chúng ta sẽ sử dụng thuộc tính **pivot**.
+```php
+$product = App\Product::find(1);
+
+foreach($product->orders as $order)
+{
+    echo $order->pivot->created_at;
+}
+```
+- muốn thay đổi thuộc tính **pivot**, chỉ cần sử dụng method **as** khi khai báo:
+```php
+return $this->belongsToMany('App\Product')
+                ->as('newname')
+                ->withTimestamps();
+```
+- giờ muốn truy cập các thuộc tính của bảng trung gian thay thế **pivot** thành **newname** là được
+```php
+$product = App\Product::find(1);
+
+foreach($product->orders as $order)
+{
+    echo $order->newname->created_at;
+}
+```
+- bảng trung gian được tạo ra tự động sẽ chỉ có 2 khóa ngoại và timestamps. nếu cần thêm cột nào trong bảng thì chúng ta có thể khai báo như sau:
+```php
+$this->belongsToMany('App\Product')->withPivot('address');
+
+```
+-  muốn lấy các sản phẩm với điều kiện của bảng trung gian là hợp lệ thì sử dụng method **wherePivot()**
+```php
+$this->belongsToMany(Product::class)->wherePivot('price', '>', 20000);
+```
+Ở đây sẽ lấy ra các Order có giá lớn hơn 20000.
+
+
+# Chapter 4
+
+## 1. Accessors/Mutators dùng để làm gì?
+- Accessors và Mutators đều cho phép chúng ta format lại các giá trị thuộc tính của Eloquent khi lấy ra hoặc thêm vào Model. Ngoài việc hỗ trợ tạo accessor và mutator, Eloquent cũng có thể tự động chuyển các trường date thành Carbon instance hoặc thậm chí chuyển trường text thành JSON.
+
+## 2. Tạo Accessors/Mutators như thế nào?
+
+### 1. Định nghĩa 1 accessor:
+- Ví dụ, chúng ta hãy cũng tạo một hàm có tên getNameAttribute trong model User tại thư mục app như sau:
+```php
+public function getNameAttribute($value)
+    {
+        return $this->strtoupper($value);
+    }
+
+```
+- hàm trên có tác dụng chuyển chữ thường -> hoa. 
+- Hàm này được viết theo kiểu camelCase để thực hiện việc lấy giá trị cho thuộc tính name. 
+- Muốn định nghĩa một accessors trong một model bất kỳ nào, thì trong function của bạn phải có tiền tố là get và hậu tố là Attribute.
+- sau đó ở routes/web.php ta tạo ra 1 route mới chỉ đến accessor đó
+```php
+Route::get('/accessors', function() {
+	$user = App\User::find(1);
+	
+	return $upper_name = $user->name;
+});
+```
+- Kết quả là thuộc tính $name của $user sẽ được viết hoa
+
+### Định nghĩa 1 mutators
+- Ngược lại với accessors, mutators có nghĩa là khi bạn muốn format lại các giá trị thuộc tính trước khi lưu vào cơ sở dữ liệu. 
+- Để định nghĩa một Mutators, ví dụ này sẽ định nghĩa một phương thức setPasswordAttribute trong model User
+```php
+public function setPasswordAttribute($password)
+{
+    $this->attributes['password'] = bcrypt($password);
+}
+```
+- sau đó ở routes/web.php ta tạo ra 1 route
+```php
+Route::get('/mutators', function() {
+    $user = App\User::find(1);
+
+    $user->password = 123456;
+
+    return $user->password;
+});
+
+```
+
+- Kết quả là một đoạn ký tự đã được mã hóa. 
+- Ở ví dụ trên, hàm setPasswordAttribute sẽ được gọi với $password truyền vào là 123456. 
+- Muốn định nghĩa một Mutators trong một model, function của bạn phải có tiền tố là set và hậu tố là Attribute.
