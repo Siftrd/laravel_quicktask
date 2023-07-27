@@ -1,431 +1,66 @@
-# chapter 1
-## APP_KEY
-- sử dụng để giữ cho cookie và dữ liệu được mã hóa khác an toàn , bao gồm session cookie,trước khi 
-chuyển chúng cho trình duyệt của người dùng và sử dụng nó để giải mã cookie đọc từ trình duyệt
-
-- tự tạo APP_KEY bằng lệnh: php artisan key:generate
-
-## 1. Có những cách nào để tạo 1 project Laravel?
-
-- dùng composer: 
-```php
-composer create-project laravel/laravel project-name
-```
-- sau khi cài đặt laravel bằng laravel installation thì có thể tạo project laravel bằng : 
-```php
-laravel new project-name
-```
-
-## 2. Nêu mục đích chính, ngắn gọn của các thư mục trong dự án.
-- Thư mục app, chứa tất cả các project được tạo, hầu hết các class trong project được tạo đều ở trong đây.
-    * Thư mục Console, chứa các tập tin định nghĩa các câu lệnh trên artisan.
-    * Thư mục Exceptions, chứa các tập tin quản lý, điều hướng lỗi.
-    * Thư mục Controllers, chứa các controller của project.
-    * Thư mục Middleware, chứa các tập tin lọc và ngăn chặn các requests.
-    * Thư mục Providers, chứa các file thực hiện việc khai báo service và bind vào trong Service Container.
-- Thư mục bootstrap, chứa những file khởi động của framework và những file cấu hình auto loading, route, và file cache.
-- Thư mục config, chứa tất cả những file cấu hình.
-- Thư mục database, như tên gọi của nó, thư mục này sẽ chứa các file làm việc với cơ sở dữ liệu. Gồm 3 phần
-    * Thư mục factories, chứa các file có chức năng tạo dữ liệu ảo database, phối hợp cho việc testing.
-    * Thư mục migrations, chứa các file tạo và chỉnh sửa dữ liệu.
-    * Thư mục seeds, chứa các file tạo dữ liệu thêm vào CSDL.
-- Thư mục public, chứa file index.php giống như cổng cho tất cả các request vào project, bên trong thư mục còn chứa file JavaScript, và CSS.
-- Thư mục resources, chứa những file view và raw, các file biên soạn như LESS, SASS, hoặc JavaScript. Ngoài ra còn chứa tất cả các file lang trong project.
-    * Thư mục views, chứa các file view xuất giao diện người dùng.
-- Thư mục routes, chứa tất cả các điều khiển route (đường dẫn) trong project. Chứa các file route sẵn có: web.php, channels.php, api.php, và console.php.
-- file api.php, điều khiển các route của ứng dụng, như route của ứng dụng User (đăng ký, đăng nhập, ...).
-- file web.php, điều khiển các route của view, như route của trang top, sản phẩm, ...
-- Thư mục storage, chứa các file biên soạn blade templates của bạn, file based sessions, file caches, và những file sinh ra từ project.
-    * Thư mục app, dùng để chứa những file sinh ra từ project.
-    * Thư mục framework, chứa những file sinh ra từ framework và caches.
-    * Thư mục logs, chứa những file logs.
-    * Thư mục /storage/app/public, lưu những file người dùng tạo ra như hình ảnh.
- - Thư mục tests, chứa những file tests, như PHPUnit test.
- - Thư mục vendor, chứa các thư viện của Composer.
- - file .env, chứa các config chính của Laravel.
- - file artisan thực hiện lệnh của Laravel.
- - File .gitattributes/.gitignore dành cho xử lý git.
- - File của Composer: composer.json/ composer.lock/ composer-setup.php
- - file package.js, chứa các package cần dùng cho projects.
- - file phpunit.xml, xml của phpunit dùng để testing project.
- - file webpack.mix.js, file dùng để build các webpack.
-
-## 3. Vòng đời của một request trong Laravel. (Mở rộng)
-
-![image](https://github.com/Siftrd/laravel_quicktask/assets/90273323/cdfe67cb-986c-4287-8e77-1650dfbf15d5)
-
-- Đầu tiên, Client sẽ gửi 1 request đến index.php <là đích đến của mọi request, khởi nguyên cho framework>.
-- Index.php sẽ khởi tạo các class,model liên quan, kết nối với app.php, đăng ký các interface, chuẩn bị và khởi tạo ứng dụng.
-- Tiếp theo, request của client sẽ được gửi đến HTTP Kernel <cấu hình xử lý lỗi, cấu hình logger,xác định môi trường ứng dụng, ...> để lọc các request.
-- Sau khi lọc, thì HTTP kernel sẽ load các service provider.
-- Tiếp thì các request sẽ gửi đến router, router sẽ kiểm tra request nếu khớp hoàn toàn với 1 route nào đó thì sẽ có 2 hướng xử lý <Khi khai báo route, Laravel cho phép ta có thể ràng buộc request đi qua bằng các middleware tự tạo>:
-    1. Route -> Middleware -> Controller/Action
-    2. Route -> Controller/Action
-- Nếu theo route 1, thì request sẽ được middleware xử lý logic theo những ràng buộc mà coder đặt ra để quyết định xem request đó có được đi tiếp hay là không.
-- Sau đó request sẽ được đưa tới Controller để xử lý, xong sẽ trả về response có thể qua view hoặc không thông qua view
-
-# chapter 2
-## 1. Migration là gì?
-- Migration cho phép tạo các bảng, các cột cơ sở dữ liệu (Database) bằng các dòng lệnh PHP, ngoài ra có thể dễ dàng cập nhật nội dung các bảng, các cột đã tồn tại.
-## 2. Hàm up() và down() trong một class migration dùng để làm gì?
-- Hàm up có tác dụng thực thi migration, thường được sử dụng để tạo 1 bảng, cột, hay index cho database<create,update...>. 
-- Hàm down có tác dụng thực thi đoạn lệnh rollback, thường sẽ làm ngược lại những hành động của hàm up<drop, delete,...>.
-## 3. Nêu các câu lệnh Migration thông dụng mà bạn biết.
-```php
-php artisan make:migration "ten-migration" --create<tạo mới bảng>/--table<chỉnh sửa bảng> = "ten-bang"
-```
-Câu lệnh trên có tác dụng tạo 1 migration "ten-migration" với các tùy chọn tương ứng
-```php
-php artisan migrate
-```
-Lệnh trên có tác dụng thực thi các migration được tạo
-```php
-php artisan migrate:reset
-```
-Lệnh trên sẽ rollback toàn bộ CSDL của bạn hay đúng hơn là chạy toàn bộ function down() trong các file migration của bạn.
-```php
-php artisan migrate:refresh
-```
-Lệnh này nhằm rollback toàn bộ CSDL đồng thời chạy lại luôn toàn bộ các file migrate của bạn
-```php
-php artisan migrate:rollback
-```
-Với lệnh này,toàn bộ file có batch mới nhất trong bảng migration sẽ chạy tất cả các function down() hay chính xác hơn là đảo ngược lại thay đổi mà nó tạo ra cho CSDL
-Nhưng nếu bạn không định nghĩa nội dung cho function down thì lệnh rollback coi như không có hiệu lực đồng nghĩa với việc migration đó vẫn tồn tại trong cơ sở dữ liệu.
-
-**Các câu lệnh tạo bảng thường dùng**
-
-$table->integer('votes'); Tương đương INTEGER.
-
-$table->string('description',255); Cột tương đương VARCHAR với độ dài tùy chọn.
-
-$table->boolean('confirmed'); Kiểu BOOLEAN .
+<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-$table->date('created_at');Tương đương kiểu DATETIME.
+<p align="center">
+<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+</p>
 
-$table->double('amount', 8, 2);	Cột tương đương DOUBLE với độ chính xác (tổng số) và tỷ lệ (chữ số thập phân).
+## About Laravel
 
-$table->float('amount', 8, 2);	Cột tương đương FLOAT với độ chính xác (tổng số) và tỷ lệ (chữ số thập phân).
+Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-$table->increments('id');	Cột tương đương tăng dần UNSIGNED 
-INTEGER (khóa chính) .
+- [Simple, fast routing engine](https://laravel.com/docs/routing).
+- [Powerful dependency injection container](https://laravel.com/docs/container).
+- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
+- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
+- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
+- [Robust background job processing](https://laravel.com/docs/queues).
+- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
-...
+Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-**modifier của các bảng**
+## Learning Laravel
 
-->autoIncrement()	Đặt các cột INTEGER làm tăng tự động (khóa chính)
+Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
-->charset('utf8')	Chỉ định một bộ ký tự cho cột (MySQL)
+You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
 
-->default($value)	Chỉ định giá trị "mặc định" cho cột
+If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-->nullable($value = true)	Cho phép (theo mặc định) giá trị NULL được chèn vào cột
+## Laravel Sponsors
 
-->unsigned()	Đặt các cột INTEGER là UNSIGNED (MySQL)
+We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
 
-...
+### Premium Partners
 
-**Cách tạo model trong Laravel.**
+- **[Vehikl](https://vehikl.com/)**
+- **[Tighten Co.](https://tighten.co)**
+- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
+- **[64 Robots](https://64robots.com)**
+- **[Cubet Techno Labs](https://cubettech.com)**
+- **[Cyber-Duck](https://cyber-duck.co.uk)**
+- **[Many](https://www.many.co.uk)**
+- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
+- **[DevSquad](https://devsquad.com)**
+- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
+- **[OP.GG](https://op.gg)**
+- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
+- **[Lendio](https://lendio.com)**
 
-```php
-php artisan make:model Tasks <có thể tạo luôn migration bằng cách thêm option -m hoặc --migrate>
-php artisan make:model Tasks -m 
-```
+## Contributing
 
-## 1. Mass assignment là gì?
-- Lỗi bảo mật mass-assignment xảy ra khi một user truyền vào một tham số HTTP không mong muốn trong request, và tham số đó sẽ có thể thay đổi một column trong database mà bạn không ngờ tới. Ví dụ, một user xấu có thể gửi một tham số is_admin qua HTTP request, và khi giá trị này được map vào trong model qua hàm create, sẽ cho phép user thay đổi để biến thành một admin.
+Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
 
-## 2. Cách xử lý Mass assignment trong Laravel.
-- bạn cần thiết phải chỉ định thuộc tinh $fillable hoặc $guarded trong model, để Eloquent model được bảo vệ trước mass-assignment.
+## Code of Conduct
 
-## 3. Tại sao Laravel có cả thuộc tính ""fillable"" và ""guarded"".
+In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
 
-- $fillable dùng để lưu danh sách các thuộc tính "được phép" (white list) mass-assign.
-- $guarded để lưu các thuộc tính mà không được phép mass-assign. Các thuộc tính khác không lưu trong $guarded sẽ được mass-assign. Vì thế, $guarded được coi như là một "black list"
-- Chỉ có thể sử dụng một trong hai, hoặc $fillable hoặc $guarded, chứ không được dùng cả hai cùng một lúc
-
-## 4. Với các thuộc tính nằm trong blacklist, ta làm như thế nào để thay đổi nó?
-    
-
-
-# Chapter 3
-
-## 1. Kể tên các quan hệ của Laravel và phương thức tương ứng.
-- One to One
-```php
-$this->hasOne('App\Avatar');
-
-$this->belongsTo('App\User');
-```
-
-- One to Many
-```php
-$this->hasMany('App\Avatar');
-
-$this->belongsTo('App\User');
-```
-- Many to Many
-```php
-$this->belongsToMany('App\Avatar');
-
-$this->belongsToMany('App\User');
-```
-    - Has One Through
-    ví dụ có 3 bảng
-    users
-    id - integer
-        supplier_id - integer
-
-    suppliers
-        id - integer
-
-    history
-        id - integer
-        user_id - integer
-
-- Mặc dù bảng **history** không chứ **supplier_id** nhưng chúng ta vẫn có thể truy cập đến **user's history** bới mối quan hệ **hasOneThrough** như sau
-
-```php
-$this->hasOneThrough('App\History', 'App\User');
-```
-- Tham số đầu tiên của quan hệ này là tên model mà chúng ta muốn truy cập, tham số thứ hai là model trung gian. Chúng ta cũng có thể custom lại tên của các khóa ngoại bằng cách thêm các tham số, với tham số thứ 3 là khóa ngoại của bảng trung gian, tham số thứ 4 là khóa ngoại của bảng mà chúng ta muốn gọi tới, tham số thứ 5 là trường mà chúng ta muốn liên kết ở bảng đang sử dụng, tham số thứ 6 là trường mà chúng ta muốn liên kết ở bảng trung gian
-```php
-$this->hasOneThrough(
-            'App\History',
-            'App\User',
-            'supplier_id', // Khóa ngoại của bảng trung gian user
-            'user_id', // Khóa ngoại của bảng chúng ta muốn truy cập đến
-            'id', // Khóa mà chúng ta muốn liên kết ở bảng supplier
-            'id' // Khóa mà chúng ta muốn liên kết ở bảng user
-        );
-```
-    - Has Many Through
-    teams
-        id - integer
-        name - string
-
-    users
-        id - integer
-        team_id - integer
-        name - string
-
-    posts
-        id - integer
-        user_id - integer
-        title - string
-    Mặc dù bảng posts không chứa khóa ngoại team_id, nhưng với quan hệ hasManyThrough sẽ cung cấp cho chúng ta lấy tất cả posts của một teams bằng cách $team->posts. Để thực hiện việc này thì Eloquent sẽ kiểm tra team_id thông qua bảng users. Chúng ta sẽ biểu diễn quan hệ như sau:
-```php
-$this->hasManyThrough('App\Post', 'App\User');
-```
-
-- Tham số đầu tiên của quan hệ này là tên model mà chúng ta muốn truy cập, tham số thứ hai là model trung gian. Chúng ta cũng có thể custom lại tên của các khóa ngoại bằng cách thêm các tham số, với tham số thứ 3 là khóa ngoại của bảng trung gian, tham số thứ 4 là khóa ngoại của bảng mà chúng ta muốn gọi tới, tham số thứ 5 là trường mà chúng ta muốn liên kết ở bảng đang sử dụng, tham số thứ 6 là trường mà chúng ta muốn liên kết ở bảng trung gian
-
-```php
-    $this->hasManyThrough(
-            'App\Post',
-            'App\User',
-            'country_id', // khóa ngoại của bảng trung gian
-            'user_id', // khóa ngoại của bảng mà chúng ta muốn gọi tới
-            'id', //trường mà chúng ta muốn liên kết ở bảng đang sử dụng
-            'id' // trường mà chúng ta muốn liên kết ở bảng trung gian.
-        );
-```
-- Polymorphic Relations
-
-## 2. Nêu các cách liên kết 2 đối tượng có quan hệ n-n.
-- Ví dụ một product sẽ thuộc nhiều orders mà một order lại có nhiều products
-- Để biểu diễn được quan hệ này chúng ta cần sử dụng đến một bảng thế 3, có tên là order_product. Bảng này sẽ đồng thời sẽ chứa 2 cột là order_id và product_id
-- và chúng ta sẽ dùng method belongsToMany để biểu diễn mối quan hệ này:
-```php
-$this->belongsToMany('App\Order');
-```
-- Eloquent sẽ tự động tìm đến bảng trung gian đặt tên theo thứ tự alphabet, trong trường hợp này bảng sẽ tên là order_product. Tuy nhiên nếu bạn muốn đặt 1 cái tên khác mà không theo quy ước ví dụ là product_order thì chỉ cần truyền thêm tham số thứ 2 vào method belongsToMany.
-```php
-$this->belongsToMany('App\Order', 'product_order');
-```
-- Tương tự bạn cũng có thể custom lại tên của 2 tên của cột liên kết tương ứng với tham số thứ 3 và thứ 4 của method belongsToMany. Với tham số thứ 3 sẽ là khóa ngoại của bảng đang định nghĩa quan hệ và tham số thứ 4 là bảng chúng ta muốn join. Ví dụ trong trường hợp này.
-```php
-$this->belongsToMany('App\Order', 'product_order', 'product_id', 'order_id');
-```
-## 3. Làm thế nào để lấy dữ liệu từ bảng trung gian trong quan hệ n-n."
-- Để truy cập đến các cột của bảng trung gian chúng ta sẽ sử dụng thuộc tính **pivot**.
-```php
-$product = App\Product::find(1);
-
-foreach($product->orders as $order)
-{
-    echo $order->pivot->created_at;
-}
-```
-- muốn thay đổi thuộc tính **pivot**, chỉ cần sử dụng method **as** khi khai báo:
-```php
-return $this->belongsToMany('App\Product')
-                ->as('newname')
-                ->withTimestamps();
-```
-- giờ muốn truy cập các thuộc tính của bảng trung gian thay thế **pivot** thành **newname** là được
-```php
-$product = App\Product::find(1);
-
-foreach($product->orders as $order)
-{
-    echo $order->newname->created_at;
-}
-```
-- bảng trung gian được tạo ra tự động sẽ chỉ có 2 khóa ngoại và timestamps. nếu cần thêm cột nào trong bảng thì chúng ta có thể khai báo như sau:
-```php
-$this->belongsToMany('App\Product')->withPivot('address');
-
-```
--  muốn lấy các sản phẩm với điều kiện của bảng trung gian là hợp lệ thì sử dụng method **wherePivot()**
-```php
-$this->belongsToMany(Product::class)->wherePivot('price', '>', 20000);
-```
-Ở đây sẽ lấy ra các Order có giá lớn hơn 20000.
-
-
-# Chapter 4
-
-## 1. Accessors/Mutators dùng để làm gì?
-- Accessors và Mutators đều cho phép chúng ta format lại các giá trị thuộc tính của Eloquent khi lấy ra hoặc thêm vào Model. Ngoài việc hỗ trợ tạo accessor và mutator, Eloquent cũng có thể tự động chuyển các trường date thành Carbon instance hoặc thậm chí chuyển trường text thành JSON.
-
-## 2. Tạo Accessors/Mutators như thế nào?
-
-### 1. Định nghĩa 1 accessor:
-- Ví dụ, chúng ta hãy cũng tạo một hàm có tên getFullnameAttribute trong model User tại thư mục app như sau:
-```php
-public function getFullnameAttribute()
-    {
-        # code...
-        $fullname = "{$this->first_name} {$this->last_name}";
-        return $fullname;
-    }
-```
-- hàm trên có tác dụng lấy $first_name và $last_name hợp thành chuỗi $fullname. 
-- Hàm này được viết theo kiểu camelCase để thực hiện việc lấy giá trị cho thuộc tính name. 
-
-- sau đó ở routes/web.php ta tạo ra 1 route mới chỉ đến accessor đó
-```php
-Route::get('/accessors', function () {
-    $user = User::find(1);
-    echo $user->fullname;
-});
-```
-- Kết quả là echo ra thuộc tính $fullname.
-- Muốn định nghĩa một accessors trong một model bất kỳ nào, thì trong function của bạn phải có tiền tố là get và hậu tố là Attribute.
-```
-get{Attribute}Attribute
-```
-### Định nghĩa 1 mutators
-- Ngược lại với accessors, mutators có nghĩa là khi bạn muốn format lại các giá trị thuộc tính trước khi lưu vào cơ sở dữ liệu. 
-- Để định nghĩa một Mutators, ví dụ này sẽ định nghĩa một phương thức setUsernameAttribute trong model User
-```php
-public function setUsernameAttribute($username)
-    {
-        return $this->attributes['username']=Str::slug($username, '-');
-    }
-```
-- sau đó ở routes/web.php ta tạo ra 1 route
-```php
-Route::get('/mutators', function () {
-    $user = User::find(1);
-
-    $user->username = 'Bui Nhat Minh';
-
-    echo $user->username;
-});
-
-
-```
-
-- Kết quả là một đoạn ký tự đã được mã hóa. 
-- Ở ví dụ trên, hàm setUsernameAttribute sẽ được gọi với $password truyền vào là 123456. 
-- Muốn định nghĩa một Mutators trong một model, function của bạn phải có tiền tố là set và hậu tố là Attribute.
-```
-set{Attribute}Attribute
-```
-
-## Date Mutators
-- Mặc định trong Laravel, Eloquent sẽ chuyển đổi hai trường **created_at** and **updated_at** thành các instance của Carbon, một thư viện cung cấp rất nhiều hàm hữu ích và mở rộng class DateTime của PHP.
-- chúng ta có thể tuỳ chỉnh trường nào sẽ được tự động mutated, và thậm chí có thể disable việc mutation này bằng cách ghi đè lên thuộc tính $date trên model.
-
-```php
-class User extends Authenticatable
-{
-    use Notifiable;
-
-protected $dates = [
-        'created_at', 
-        'update_at', 
-        'delete_at', 
-    ];
-}
-```
-
-## Array & JSON Casting
-- Cast kiểu array đặc biệt hữu ích khi chúng ta làm việc với các column được lưu dưới dạng JSON.
-- Giả sử database có 1 trường JSON hoặc TEXT có chứa serialized JSON, thêm vào array cast lên attribute sẽ tự động deserialize các attribute thành PHP array khitruy cập trong Eloquent model:
-```php
-class User extends Model
-{
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'options' => 'array',
-    ];
-}
-```
-- Một khi cast được định nghĩa, có thể truy cập giá trị options và nó sẽ tự động được deserialize từ JSON thành PHP array. Khi đặt giá trị options, nó sẽ tự động được serialize trở lại thành JSON để lưu vào trong cơ sở dữ liệu
-
-# Chapter 5
-## 1. Seeder/Factory/Faker dùng để làm gì?
-- Seeder là 1 class để tạo ra các dữ liệu mẫu cho database trong quá trình xây dựng ứng dụng.
-- Tạo ra 1 seeder
-```php
-php artisan make:seeder UserSeeder
-```
-- Factory là class dùng để tạo ra các dummy records.
-- Faker là một thư viện PHP tạo dữ liệu giả cho bạn.
-- Tạo ra 1 Factory với thư viện Faker
-```php
-php artisan make:factory UserFactory
-```
-```php
-<?php
-use Faker\Generator as Faker;
-
-class UserFactory extends Factory
-{
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
-    public function definition()
-    {
-        $fake_name= fake()->name();
-        $pieces = explode(" ", $fake_name);
-        $len = count($pieces);
-        return [
-            'username' => $fake_name,
-            'email' => fake()->unique()->safeEmail(),
-            'email_verified_at' => now(),
-            'password' => Hash::make(12345678), // password
-            'remember_token' => Str::random(10),
-            'is_admin' => random_int(0, 1),
-            'is_active' => random_int(0, 1),
-            'first_name'=>$pieces[0],
-            'last_name'=>$pieces[$len-1],
-        ];
-    }
-}
-```
-## 2. Khi nào nên sử dụng Seeder? Khi nào nên sử dụng Factory?
-
-- Seeder được sử dụng khi muốn thêm các bản ghi vào database mà chúng ta có thể kiểm soát được 
-
-- Factory sẽ được sử dụng khi muốn tạo 1 tập rất nhiều các bản ghi giả, để phục vụ cho việc test hoặc để kiểm tra phân trang... thay vì sử dụng seeder hay thêm từng bản ghi vào DB thì chúng ta sẽ sử dụng Factory
+## Security Vulnerabilities
+
+If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+
+## License
+
+The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).

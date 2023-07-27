@@ -13,15 +13,18 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('tasks', function (Blueprint $table) {
-            $table->id('id_task');
+        Schema::create('users', function (Blueprint $table) {
+            $table->id('u_id');
             $table->string('name');
-            $table->string('description');         
+            $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
+            $table->tinyInteger('is_admin');
+            $table->tinyInteger('is_active');
+            $table->rememberToken();
             $table->timestamps();
-            $table->tinyInteger('status')->default('0');
-            $table->unsignedBigInteger('u_id');
-            $table->foreign('u_id')->references('u_id')->on('users');
         });
+       
     }
 
     /**
@@ -31,6 +34,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tasks');
+        Schema::dropIfExists('users');
     }
 };

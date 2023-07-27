@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Str;
+use App\Models\Task;
 
 
 class User extends Authenticatable
@@ -39,16 +40,19 @@ class User extends Authenticatable
 
     public function tasks()
     {
-        return $this->hasMany('App\model\Task');
+        
+        return $this->hasMany('Task::class');
     }
+
     public function getFullnameAttribute()
     {
-        # code...
         $fullname = "{$this->first_name} {$this->last_name}";
+
         return $fullname;
     }
     public function setUsernameAttribute($username)
     {
+
         return $this->attributes['username']=Str::slug($username, '-');
     }
 }
