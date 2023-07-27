@@ -41,6 +41,7 @@ class User extends Authenticatable
     {
         return $this->hasMany(Task::class);
     }
+
     public function getFullnameAttribute()
     {
         $fullname = "{$this->first_name} {$this->last_name}";
@@ -49,6 +50,7 @@ class User extends Authenticatable
     }
     public function setUsernameAttribute($username)
     {
+
         return $this->attributes['username']=Str::slug($username, '-');
     }
 }
