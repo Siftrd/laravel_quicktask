@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TaskController;
+use App\Http\Middleware\CheckAdmin;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,7 +20,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::resource('users', UserController::class);
+Route::resource('users', UserController::class)->middleware('checkAdmin');
 
 Route::any('task/index', 'App\Http\Controllers\TaskController@index')->name('indexTask');
 Route::any('task/create', [TaskController::class, 'create'])->name('createTask');
