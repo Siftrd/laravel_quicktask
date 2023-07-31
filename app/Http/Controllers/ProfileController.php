@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Session;
 
 class ProfileController extends Controller
 {
@@ -20,7 +21,12 @@ class ProfileController extends Controller
             'user' => $request->user(),
         ]);
     }
-
+    public function changeLanguage($language)
+    {
+        Session::put('website_language', $language);
+    
+        return redirect()->back();
+    }
     /**
      * Update the user's profile information.
      */

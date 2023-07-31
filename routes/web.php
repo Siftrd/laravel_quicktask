@@ -29,4 +29,8 @@ Route::middleware('auth','checkAdmin')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::group(['middleware' => 'locale'], function() {
+    Route::get('change-language/{language}', 'ProfileController@changeLanguage')
+        ->name('user.change-language');
+});
 require __DIR__.'/auth.php';
