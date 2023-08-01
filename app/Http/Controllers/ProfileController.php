@@ -21,12 +21,6 @@ class ProfileController extends Controller
             'user' => $request->user(),
         ]);
     }
-    public function changeLanguage($language)
-    {
-        Session::put('website_language', $language);
-    
-        return redirect()->back();
-    }
     /**
      * Update the user's profile information.
      */

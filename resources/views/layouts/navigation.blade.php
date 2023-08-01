@@ -18,11 +18,11 @@
                 </div>
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <a href="{!! route('user.change-language', ['vi']) !!}">Vietnam</a>
+                    <a href="{{ route('lang',['lang' => 'vi']) }}">Vietnam</a>
                 </div>
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <a href="{!! route('user.change-language', ['en']) !!}">English</a>
+                    <a href="{{ route('lang',['lang' => 'en' ]) }}">English</a>
                 </div>
             </div>
 

@@ -3,8 +3,7 @@
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('Profile') }}
         </h2>
-        <a href="{!! route('user.change-language', ['en']) !!}">English</a>
-    <a href="{!! route('user.change-language', ['vi']) !!}">Vietnam</a>
+        
     </x-slot>
 
     <div class="py-12">

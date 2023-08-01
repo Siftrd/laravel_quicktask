@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\ProfileController;
-
+use Illuminate\Support\Facades\App;
 class Locale
 {
     /**
@@ -21,7 +21,7 @@ class Locale
     $language = Session::get('website_language', config('app.locale'));
     // Lấy dữ liệu lưu trong Session, không có thì trả về default lấy trong config
 
-    config(['app.locale' => $language]);
+    App::setLocale($language);
     // Chuyển ứng dụng sang ngôn ngữ được chọn
 
     return $next($request);

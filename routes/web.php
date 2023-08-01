@@ -3,7 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\LangController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -29,8 +29,9 @@ Route::middleware('auth','checkAdmin')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::group(['middleware' => 'locale'], function() {
-    Route::get('change-language/{language}', 'ProfileController@changeLanguage')
-        ->name('user.change-language');
-});
+// Route::group(['middleware' => 'locale'], function() {
+    Route::get('lang/{lang}',[LangController::class, 'changeLang'])->name('lang')->middleware('locale');
+// });
+
+
 require __DIR__.'/auth.php';
