@@ -15,6 +15,7 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
 
     protected $primaryKey = 'u_id';
+  
     protected $guarded = [
         'is_admin'
     ];
@@ -41,6 +42,7 @@ class User extends Authenticatable
     {
         return $this->hasMany(Task::class);
     }
+
     public function getFullnameAttribute()
     {
         $fullname = "{$this->first_name} {$this->last_name}";
