@@ -29,8 +29,9 @@ Route::middleware('auth','checkAdmin')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::middleware(['web'])->get('lang/{lang}' , [LangController::class, 'changeLang'] )->name('lang');
 // Route::group(['middleware' => 'locale'], function() {
-    Route::get('lang/{lang}',[LangController::class, 'changeLang'])->name('lang')->middleware('locale');
+    // Route::->middleware('locale');
 // });
 
 

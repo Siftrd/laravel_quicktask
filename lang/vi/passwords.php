@@ -1,22 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 return [
-
-    /*
-    |--------------------------------------------------------------------------
-    | Password Reset Language Lines
-    |--------------------------------------------------------------------------
-    |
-    | The following language lines are the default lines which match reasons
-    | that are given by the password broker for a password update attempt
-    | has failed, such as for an invalid token or invalid new password.
-    |
-    */
-
-    'reset' => 'Bạn đã đổi mật khẩu thành công!',
-    'sent' => 'Đường dẫn đổi mật khẩu đã được gửi đến email của bạn!',
-    'throttled' => 'Hãy đợi 1 lúc trước khi thử lại.',
-    'token' => 'Token không tồn tại.',
-    'user' => "Không tồn tại tài khoản ứng với email đã nhập.",
-
+    'reset'     => 'Mật khẩu mới đã được cập nhật!',
+    'sent'      => 'Hướng dẫn cấp lại mật khẩu đã được gửi!',
+    'throttled' => 'Vui lòng đợi trước khi thử lại.',
+    'token'     => 'Mã khôi phục mật khẩu không hợp lệ.',
+    'user'      => 'Không tìm thấy người dùng với địa chỉ email này.',
 ];
